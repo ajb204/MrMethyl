@@ -40,14 +40,9 @@ from scipy.stats import spearmanr
 def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=True, irreducible=False, num=False):
     #First set up the spin system and then cross-correlate:
     print 'Calculating methyl-methyl rates'
-    auto = CommAux('CH3', latex_file='eps/auto_latex.tex', sparse=sparse, sym=sym)
-    cross = CommAux('CH3CH3', latex_file='eps/cross_latex.tex', sparse=sparse, sym=sym)
-    
+    cross = CommAux('CH3CH3', latex_file='output/eps/cross_latex.tex', sparse=sparse, sym=sym)
+    print_log=open('output/log/log_Comm','w')
     if(ax):
-        auto.GetDip('H2', 'C1', 'd1', tag ='single')
-        auto.GetDip('H3', 'C1', 'd1', tag ='single')
-        auto.GetDip('H4', 'C1', 'd1', tag ='single')
-        
         cross.GetDip('H2', 'C1', 'd1', tag ='single')
         cross.GetDip('H3', 'C1', 'd1', tag ='single')
         cross.GetDip('H4', 'C1', 'd1', tag ='single')
@@ -55,10 +50,6 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
         cross.GetDip('H7', 'C5', 'd2', tag ='single')
         cross.GetDip('H8', 'C5', 'd2', tag ='single')
     if(xx):
-        auto.GetDip('H2', 'H3', 'e1', tag ='single')
-        auto.GetDip('H2', 'H4', 'e1', tag ='single')
-        auto.GetDip('H3', 'H4', 'e1', tag ='single')
-
         cross.GetDip('H2', 'H3', 'e1', tag ='single')
         cross.GetDip('H2', 'H4', 'e1', tag ='single')
         cross.GetDip('H3', 'H4', 'e1', tag ='single')
@@ -66,10 +57,6 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
         cross.GetDip('H6', 'H8', 'e2', tag ='single')
         cross.GetDip('H7', 'H8', 'e2', tag ='single')
     if(cx):
-        auto.GetCSA('H2', 'cX1', tag='single')
-        auto.GetCSA('H3', 'cX1', tag='single')
-        auto.GetCSA('H4', 'cX1', tag='single')
-        
         cross.GetCSA('H2', 'cX1', tag='single')
         cross.GetCSA('H3', 'cX1', tag='single')
         cross.GetCSA('H4', 'cX1', tag='single')
@@ -77,9 +64,7 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
         cross.GetCSA('H7', 'cX2', tag='single')
         cross.GetCSA('H8', 'cX2', tag='single')
     if(ca):
-        auto.GetCSA('C1', 'cA1', tag='static')
         cross.GetCSA('C1', 'cA1', tag='static')
-        
         cross.GetCSA('C5', 'cA2', tag='static')
 
     index = numpy.arange(3)
@@ -89,28 +74,25 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
             j_str = 'H'+str(j)
             cross.GetDip(i_str, j_str, 'm', tag='double')
     
-    auto.macro=macro
-    auto.CrossCorrHam()
-    
     cross.macro=macro
     cross.CrossCorrHam()
     
     #LOAD UP THE METHYLS FROM THE PDB FILE:
-    location,orientation,sites,map_key_xrd,map_index_xrd,residues=get_pdb_coord_methyl('1EZA.pdb')
+    location,orientation,sites,map_key_xrd,map_index_xrd,residues=get_pdb_coord_methyl('input/1EZA.pdb')
     
     #LOAD UP THE PEAK LIST FILE:
-    cross_matrix,reflected_matrix,d1_matrix,d2_matrix,map_key_nmr,map_index_nmr,mask_matrix=peak_file_parser('correlate.3')
+    cross_matrix,reflected_matrix,d1_matrix,d2_matrix,map_key_nmr,map_index_nmr,mask_matrix=peak_file_parser('input/correlate.3')
     
     #DEBUGGING:
     print cross_matrix.shape
     print location.shape
     for key in map_key_xrd:
         if key not in map_key_nmr:
-            print 'KEY = ',key,' IS NOT IN NMR DATA'
+            print_log.write('KEY = '+key+' IS NOT IN NMR DATA')
             
     for key in map_key_nmr:
         if key not in map_key_xrd:
-            print 'KEY = ',key,' IS NOT IN XRD DATA'
+            print_log.write('KEY = '+key+' IS NOT IN XRD DATA')
     
     start=True
     for key in map_key_xrd:
@@ -119,7 +101,7 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
             test=key
         if(int(re.search('\d+',key).group())>int(re.search('\d+',test).group())):
             test=key
-    print 'MAXIMUM AMINO ACID VALUE FOR XRD DATA IS = ',test
+    print_log.write('MAXIMUM AMINO ACID VALUE FOR XRD DATA IS = '+test)
            
     test=''
     start=True
@@ -131,9 +113,9 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
             if(int(re.search('\d+',key).group())>int(re.search('\d+',test).group())):
                 test=key
         except AttributeError:
-            print 'ATTRIBUTE ERROR, key = ',key,' test = ',test
+            print_log.write('ATTRIBUTE ERROR, key = '+key+' test = '+test)
             
-    print 'MAXIMUM AMINO ACID VALUE FOR NMR DATA IS = ',test
+    print_log.write('MAXIMUM AMINO ACID VALUE FOR NMR DATA IS = '+test)
     
     #Now we have the spin system set-up, put into it the numerical values:
     cross.tm=0.5*10E-12
@@ -183,8 +165,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     r_auto = cross.CalcRate('M1z', 'M1z')
     
     #DEBUGGING:
-    print 'r_cross = \n',r_cross.shape,'\n',r_cross
-    print 'r_auto = \n',r_auto.shape,'\n',r_auto
+    numpy.savetxt('output/log/r_cross',r_cross)
+    numpy.savetxt('output/log/r_auto',r_auto)
     
     num_samples=800
     num_methyls = location.shape[0]
@@ -214,8 +196,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     sim_matrix = numpy.average(result_matrix[:,:,:], axis=2)
     dist_matrix = numpy.sqrt(numpy.sum(v_mm * v_mm, axis=2))
     
-    print 'sim_matrix = \n',sim_matrix
-    print 'dist_matrix = \n',dist_matrix
+    numpy.savetxt('output/log/sim_matrix',sim_matrix)
+    numpy.savetxt('output/log/dist_matrix',dist_matrix)
     
     #CAST DATA SETS INTO THE SAME INDEXING SCHEME. Choose NMR data indexing scheme as the smaller of the two.
     xrd,xrd_ab=[],[]
@@ -241,8 +223,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     
     
     xrd_indices,nmr_indices=numpy.array(xrd_indices),numpy.array(nmr_indices)
-    print 'xrd_indices = ',xrd_indices
-    print 'nmr_indices = ',nmr_indices
+#     print 'xrd_indices = ',xrd_indices
+#     print 'nmr_indices = ',nmr_indices
     ii_xrd,jj_xrd=numpy.meshgrid(xrd_indices,xrd_indices,indexing='ij')
     ii_nmr,jj_nmr=numpy.meshgrid(nmr_indices,nmr_indices,indexing='ij')
     
@@ -250,7 +232,6 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     mask=numpy.zeros(ii_nmr.shape)
     mask[ii_nmr,jj_nmr]=mask_matrix
     mask=numpy.logical_not(mask)
-    print 'THERE ARE = ',numpy.sum(mask),' NMR PEAKS'
     
     #MAP XRD DATA ONTO THE NMR DATA:
     xrd_peaks=numpy.zeros(ii_nmr.shape)
@@ -265,9 +246,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     #ITERATE OVER THE INDICES WHICH APPLY TO RESIDUES WITH A/B POSSIBILITIES:
     i,j=numpy.arange(nmr_peaks.shape[0]),numpy.arange(nmr_peaks.shape[0])
     
-    print 'nmr and xrd data: \n'
-    print nmr_peaks[0:16,0:16][mask[0:16,0:16]]
-    print xrd_peaks[0:16,0:16][mask[0:16,0:16]]
+    numpy.savetxt('output/log/nmr_peaks',nmr_peaks)
+    numpy.savetxt('output/log/xrd_peaks',xrd_peaks)
     
     for i_n in numpy.arange(nmr_ab.shape[0]):
         i_a,i_b=nmr_ab[i_n,0],nmr_ab[i_n,1]
@@ -280,20 +260,19 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
 #         print xrd_peaks[i_b,:][mask[i_b,:]]
 #         print '\n'
         if corr_2>corr_1:
-            print 'NEED TO SWAP ',i_a,' AND ',i_b
+            print_log.write('NEED TO SWAP '+str(i_a)+' AND '+str(i_b))
             i[i_a],i[i_b]=i_b,i_a
             j[i_a],j[i_b]=i_b,i_a
     ii,jj=numpy.meshgrid(i,j,indexing='ij')
     nmr_peaks=nmr_peaks[ii,jj]
     xrd_peaks=xrd_peaks[ii,jj]
     dist=dist[ii,jj]
-    print 'ii = \n',ii
-    print 'jj = \n',jj
-    print 'TOTAL CORRELATION = ',pearsonr(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())
+    print_log.write('TOTAL CORRELATION = '+str(pearsonr(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())[0]))
     plt.scatter(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())
+    plt.savefig('output/eps/scatter_fig.eps')
     plt.show()
     
-    print 'REPEAT - SEE IF WE DO ANY MORE SWAPS: '
+    print_log.write('REPEAT - SEE IF WE DO ANY MORE SWAPS: ')
     i,j=numpy.arange(nmr_peaks.shape[0]),numpy.arange(nmr_peaks.shape[0])
     for i_n in numpy.arange(nmr_ab.shape[0]):
         i_a,i_b=nmr_ab[i_n,0],nmr_ab[i_n,1]
@@ -306,17 +285,15 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
 #         print xrd_peaks[i_b,:][mask[i_b,:]]
 #         print '\n'
         if corr_2>corr_1:
-            print 'NEED TO SWAP ',i_a,' AND ',i_b
+            print_log.write('NEED TO SWAP '+str(i_a)+' AND '+str(i_b))
             i[i_a],i[i_b]=i_b,i_a
             j[i_a],j[i_b]=i_b,i_a
     ii,jj=numpy.meshgrid(i,j,indexing='ij')
     nmr_peaks=nmr_peaks[ii,jj]
     xrd_peaks=xrd_peaks[ii,jj]
     dist=dist[ii,jj]
-    print 'ii = \n',ii
-    print 'jj = \n',jj
     
-    
+    print_log.close()
 
     
     

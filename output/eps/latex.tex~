@@ -1,0 +1,415 @@
+\documentclass[showkeys,aps,prb,prepreint,amssymb, amsmath,nobibnotes]{revtex4}
+\usepackage{bm,setspace}
+\usepackage{graphicx,graphics,booktabs}
+\usepackage{accents}
+\newlength{\dhatheight}
+\begin{document}
+\section{CH2}
+Dipolar between H2 and C1 $\beta$= $\beta$ $\alpha$= $1\pi/2$ distance $R_d$ constant $d=\frac{\hbar\gamma_H\gamma_C}{4\pi\epsilon_0 (R_d)^3}$
+
+Dipolar between H3 and C1 $\beta$= $\beta$ $\alpha$= $3\pi/2$ distance $R_d$ constant $d=\frac{\hbar\gamma_H\gamma_C}{4\pi\epsilon_0 (R_d)^3}$
+
+Dipolar between H3 and H2 $\beta$= $0.00\pi$ $\alpha$= $0.00\pi$ distance $R_e$ constant $e=\frac{\hbar\gamma_H\gamma_H}{4\pi\epsilon_0 (R_e)^3}$
+
+CSA for C1 $\beta$= $0.00\pi$ $\alpha$= $0.00\pi$ constant $c_S=\hbar\gamma_CB_0 \Delta\delta/3$
+
+CSA for H2 $\beta$= $\beta$ $\alpha$= $1\pi/2$ constant $c_I=\hbar\gamma_HB_0 \Delta\delta/3$
+
+CSA for H3 $\beta$= $\beta$ $\alpha$= $3\pi/2$ constant $c_I=\hbar\gamma_HB_0 \Delta\delta/3$
+
+Macromolecular terms only:  False
+
+Spectral density functions: $$J\left(\omega\right)=\frac{\tau_c}{1+\omega^2\tau_c^2}  $$    
+Rate for $\beta \beta $ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,\beta \beta }=
+& + \left(dP_0-c_S\right)^2 \left[ +\frac{4}{5} J\left(0\right) +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + \left(e-2c_IP_0\right)^2 \left[ +\frac{3}{10} J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ +\frac{2}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ +\frac{1}{10} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{3}{10} J\left(\omega_H\right) +\frac{1}{10} J\left(\omega_C-\omega_H\right) +\frac{3}{5} J\left(\omega_C+\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{10} J\left(\tau_m,\omega_H\right) +\frac{1}{5} J\left(\tau_m,\omega_C+\omega_H\right) +\frac{1}{30} J\left(\tau_m,\omega_C-\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{1}{15} J\left(\frac{\tau_m}{4},0\right) +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_H\right) +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{3}{5} J\left(2\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,\alpha \beta }=
+& + \left(\frac{9}{200}e-\frac{18}{25}c_IP_0\right)^2 \left[ - 1 J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ -\frac{\sqrt{2}}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ -\left(\frac{1}{200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\left(\frac{9}{200}\right)^{1/2} J\left(\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\left(\frac{1}{200}\right)^{1/2} J\left(\tau_m,\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\left(\frac{1}{3200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,\alpha \alpha }=
+& + e^2 \left[ -\frac{3}{5} J\left(2\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,CzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,CzHzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,H\alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $\beta \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\beta \beta ,H\beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,\beta \beta }=
+& + \left(\frac{9}{200}e-\frac{18}{25}c_IP_0\right)^2 \left[ - 1 J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ -\frac{\sqrt{2}}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ -\left(\frac{1}{200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\left(\frac{9}{200}\right)^{1/2} J\left(\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\left(\frac{1}{200}\right)^{1/2} J\left(\tau_m,\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\left(\frac{1}{3200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,\alpha \beta }=
+& + c_I^2P_0^2 \left[ +\frac{6}{5} J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ +\frac{2}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ +\frac{1}{10} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + c_S^2 \left[ +\frac{4}{5} J\left(0\right) +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{1}{10} J\left(\omega_C-\omega_H\right) +\frac{3}{10} J\left(\omega_H\right) +\frac{3}{5} J\left(\omega_C+\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{5} J\left(\tau_m,\omega_C\right) +\frac{1}{10} J\left(\tau_m,\omega_H\right) +\frac{4}{15} J\left(\tau_m,0\right) +\frac{1}{30} J\left(\tau_m,\omega_C-\omega_H\right) +\frac{1}{5} J\left(\tau_m,\omega_C+\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + e^2 \left[ +\frac{3}{10} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,\alpha \alpha }=
+& + \left(\frac{9}{200}e+\frac{18}{25}c_IP_0\right)^2 \left[ - 1 J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ -\frac{\sqrt{2}}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ -\left(\frac{1}{200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\left(\frac{9}{200}\right)^{1/2} J\left(\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\left(\frac{1}{200}\right)^{1/2} J\left(\tau_m,\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\left(\frac{1}{3200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,CzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,CzHzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,H\alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $\alpha \beta $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \beta ,H\beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,\beta \beta }=
+& + e^2 \left[ -\frac{3}{5} J\left(2\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,\alpha \beta }=
+& + \left(\frac{9}{200}e+\frac{18}{25}c_IP_0\right)^2 \left[ - 1 J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ -\frac{\sqrt{2}}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ -\left(\frac{1}{200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\left(\frac{9}{200}\right)^{1/2} J\left(\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\left(\frac{1}{200}\right)^{1/2} J\left(\tau_m,\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\left(\frac{1}{3200}\right)^{1/2} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,\alpha \alpha }=
+& + \left(dP_0+c_S\right)^2 \left[ +\frac{4}{5} J\left(0\right) +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + \left(e+2c_IP_0\right)^2 \left[ +\frac{3}{10} J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ +\frac{2}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ +\frac{1}{10} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{3}{10} J\left(\omega_H\right) +\frac{1}{10} J\left(\omega_C-\omega_H\right) +\frac{3}{5} J\left(\omega_C+\omega_H\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{10} J\left(\tau_m,\omega_H\right) +\frac{1}{5} J\left(\tau_m,\omega_C+\omega_H\right) +\frac{1}{30} J\left(\tau_m,\omega_C-\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{1}{15} J\left(\frac{\tau_m}{4},0\right) +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_H\right) +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{3}{5} J\left(2\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,CzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,CzHzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,H\alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $\alpha \alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{\alpha \alpha ,H\beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,\beta \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,\alpha \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,\alpha \alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,CzHz}=
+& + c_I^2P_0^2 \left[ +\frac{6}{5} J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ +\frac{2}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ +\frac{1}{10} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + c_S^2 \left[ +\frac{6}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{3}{5} J\left(\omega_C+\omega_H\right) +\frac{1}{10} J\left(\omega_C-\omega_H\right) +\frac{3}{10} J\left(\omega_H\right) +\frac{6}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{10} J\left(\tau_m,\omega_H\right) +\frac{1}{5} J\left(\tau_m,\omega_C+\omega_H\right) +\frac{1}{30} J\left(\tau_m,\omega_C-\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_H\right) +\frac{1}{10} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{6}{5} J\left(2\omega_H\right) +\frac{3}{10} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,CzHzHz}=
+& + dc_SP_0 \left[ +\frac{\sqrt{72}}{5} J\left(\omega_C\right)\right]\\
+& + ec_IP_0 \left[ +\frac{\sqrt{72}}{5} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,H\alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $CzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHz,H\beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,\beta \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,\alpha \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,\alpha \alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,CzHz}=
+& + dc_SP_0 \left[ +\frac{\sqrt{72}}{5} J\left(\omega_C\right)\right]\\
+& + ec_IP_0 \left[ +\frac{\sqrt{72}}{5} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,CzHzHz}=
+& + c_I^2P_0^2 \left[ +\frac{12}{5} J\left(\omega_H\right)\right]\\
+& + c_I^2P_1^2 \left[ +\frac{4}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + c_I^2P_2^2 \left[ +\frac{1}{5} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + c_S^2 \left[ +\frac{6}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{3}{5} J\left(\omega_H\right) +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{5} J\left(\tau_m,\omega_C\right) +\frac{1}{5} J\left(\tau_m,\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_H\right) +\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{3}{5} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,H\alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $CzHzHz$ :
+\begin{equation}\begin{array}{rl}
+R_{CzHzHz,H\beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,\beta \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,\alpha \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,\alpha \alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,CzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,CzHzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,H\alpha }=
+& + \left(dP_0+2c_IP_0\right)^2 \left[ +\frac{1}{5} J\left(0\right) +\frac{3}{20} J\left(\omega_H\right)\right]\\
+& + \left(dP_1+2c_IP_1\right)^2 \left[ +\frac{1}{20} J\left(\tau_m,\omega_H\right) +\frac{1}{15} J\left(\tau_m,0\right)\right]\\
+& + \left(dP_2+2c_IP_2\right)^2 \left[ +\frac{1}{60} J\left(\frac{\tau_m}{4},0\right) +\frac{1}{80} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + c_S^2 \left[ +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{9}{10} J\left(\omega_C+\omega_H\right) +\frac{3}{20} J\left(\omega_C-\omega_H\right) +\frac{3}{10} J\left(\omega_C\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{10} J\left(\tau_m,\omega_C\right) +\frac{1}{60} J\left(\tau_m,\omega_C-\omega_H\right) +\frac{1}{10} J\left(\tau_m,\omega_C+\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{3}{40} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{80} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{9}{20} J\left(0\right) +\frac{3}{10} J\left(2\omega_H\right) +\frac{3}{4} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $H\alpha $ :
+\begin{equation}\begin{array}{rl}
+R_{H\alpha ,H\beta }=
+& + c_S^2 \left[ -\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ -\frac{3}{5} J\left(\omega_C+\omega_H\right) -\frac{1}{10} J\left(\omega_C-\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ -\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) -\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $\beta \beta $ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,\beta \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \beta $ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,\alpha \beta }=
+0\\
+\end{array}\end{equation}
+
+Rate for $\alpha \alpha $ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,\alpha \alpha }=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHz$ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,CzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $CzHzHz$ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,CzHzHz}=
+0\\
+\end{array}\end{equation}
+
+Rate for $H\alpha $ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,H\alpha }=
+& + c_S^2 \left[ -\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ -\frac{3}{5} J\left(\omega_C+\omega_H\right) -\frac{1}{10} J\left(\omega_C-\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ -\frac{1}{20} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) -\frac{1}{120} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right)\right]\\
+\end{array}\end{equation}
+
+Rate for $H\beta $ on $H\beta $ :
+\begin{equation}\begin{array}{rl}
+R_{H\beta ,H\beta }=
+& + \left(dP_0-2c_IP_0\right)^2 \left[ +\frac{1}{5} J\left(0\right) +\frac{3}{20} J\left(\omega_H\right)\right]\\
+& + \left(dP_1-2c_IP_1\right)^2 \left[ +\frac{1}{20} J\left(\tau_m,\omega_H\right) +\frac{1}{15} J\left(\tau_m,0\right)\right]\\
+& + \left(dP_2-2c_IP_2\right)^2 \left[ +\frac{1}{60} J\left(\frac{\tau_m}{4},0\right) +\frac{1}{80} J\left(\frac{\tau_m}{4},\omega_H\right)\right]\\
+& + c_S^2 \left[ +\frac{3}{5} J\left(\omega_C\right)\right]\\
+& + d^2P_0^2 \left[ +\frac{9}{10} J\left(\omega_C+\omega_H\right) +\frac{3}{20} J\left(\omega_C-\omega_H\right) +\frac{3}{10} J\left(\omega_C\right)\right]\\
+& + d^2P_1^2 \left[ +\frac{1}{10} J\left(\tau_m,\omega_C\right) +\frac{1}{60} J\left(\tau_m,\omega_C-\omega_H\right) +\frac{1}{10} J\left(\tau_m,\omega_C+\omega_H\right)\right]\\
+& + d^2P_2^2 \left[ +\frac{3}{40} J\left(\frac{\tau_m}{4},\omega_C+\omega_H\right) +\frac{1}{80} J\left(\frac{\tau_m}{4},\omega_C-\omega_H\right) +\frac{1}{40} J\left(\frac{\tau_m}{4},\omega_C\right)\right]\\
+& + e^2 \left[ +\frac{9}{20} J\left(0\right) +\frac{3}{10} J\left(2\omega_H\right) +\frac{3}{4} J\left(\omega_H\right)\right]\\
+\end{array}\end{equation}
+\begin{figure}[h]
+\center
+\includegraphics[width=0.49\textwidth]{eps/figCH2_1.eps}
+\caption[]{Relaxation rates versus correlation time $\tau_c$ for spin system CH2. macro=False. $
+u_0$ 600.00 MHz, $\beta$=120.00$^o$, nuc$_A$=C, nuc$_X$=H, $R_{AX}$=1.09\AA, $R_{XX}$=1.89\AA, $R_{XX2}$=3.00\AA, $\Delta \delta_A$=20.00 ppm, $\Delta \delta_X$=1.00 ppm.  }
+\end{figure} 
+\begin{figure}[h]
+\center
+\includegraphics[width=0.49\textwidth]{eps/figCH2_3.eps}
+\caption[]{Relaxation rates versus correlation time $\tau_c$ for spin system CH2. macro=False. $
+u_0$ 1200.00 MHz, $\beta$=120.00$^o$, nuc$_A$=C, nuc$_X$=H, $R_{AX}$=1.09\AA, $R_{XX}$=1.89\AA, $R_{XX2}$=3.00\AA, $\Delta \delta_A$=20.00 ppm, $\Delta \delta_X$=1.00 ppm.  }
+\end{figure} 
+\begin{figure}[h]
+\center
+\includegraphics[width=0.49\textwidth]{eps/figCH2_2.eps}
+\caption[]{Relaxation rates versus correlation time $\tau_c$ for spin system CH2. macro=False. $
+u_0$ 600.00 MHz, $\beta$=120.00$^o$, nuc$_A$=C, nuc$_X$=F, $R_{AX}$=1.35\AA, $R_{XX}$=2.34\AA, $R_{XX2}$=3.00\AA, $\Delta \delta_A$=20.00 ppm, $\Delta \delta_X$=140.00 ppm.  }
+\end{figure} 
+\begin{figure}[h]
+\center
+\includegraphics[width=0.49\textwidth]{eps/figCH2_4.eps}
+\caption[]{Relaxation rates versus correlation time $\tau_c$ for spin system CH2. macro=False. $
+u_0$ 1200.00 MHz, $\beta$=120.00$^o$, nuc$_A$=C, nuc$_X$=F, $R_{AX}$=1.35\AA, $R_{XX}$=2.34\AA, $R_{XX2}$=3.00\AA, $\Delta \delta_A$=20.00 ppm, $\Delta \delta_X$=140.00 ppm.  }
+\end{figure} 
+\end{document}

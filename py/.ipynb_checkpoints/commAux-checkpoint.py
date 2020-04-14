@@ -35,18 +35,26 @@ import matplotlib.pyplot as plt
 #import operator
 
 class CommAux():
-    def __init__(self,typ,latex_file='eps/latex.tex',sparse=True,sym=True,latex=True):
-        if(os.path.exists('lib')==0):
+    def __init__(self,typ,latex_file='output/eps/latex.tex',sparse=True,sym=True,latex=True):
+        if(os.path.exists('redfield')==0):
             print 'Warning: No libraries found'
-        if(os.path.exists('pdf')==0):
-            os.system('!mkdir pdf')
-        if(os.path.exists('eps')==0):
-            os.system('!mkdir eps')
-        if(os.path.exists('log')==0):
-            os.system('!mkdir log')
-
+        if(os.path.exists('output')==0):
+            os.system('!mkdir output')
+        if(os.path.exists('output/pdf')==0):
+            os.system('!mkdir output/pdf')
+            os.makedirs('output/pdf')
+        if(os.path.exists('output/eps')==0):
+            os.system('!mkdir output/eps')
+            os.makedirs('output/eps')
+        if(os.path.exists('output/log')==0):
+            os.system('!mkdir output/log')
+            os.makedirs('output/log')
+        if(os.path.exists('output/log/log_Aux')):
+            os.remove('output/log/log_Aux')
         self.ncpus=2
-
+        
+        print_log=open('output/log/log_Aux','w')
+        print_log.write('THIS IS A LOG FILE WHICH SAYS LOTS OF COOL STUFF: \n')
         #DS hello
         self.GNUFILE='\'C:\Program Files\gnuplot\bin\gnuplot.exe\''
         
@@ -65,10 +73,11 @@ class CommAux():
         self.GetBaseType()  #get the basetype (CHHH..)
         #sys.stdout=open('log/'+self.baseTag+'.log','w') #redirect log.
 
-        print 'Running RelCalc'
-        print '---------------'
-        print 'Type:     ',typ
-        print 'baseType: ',self.baseType   
+        print_log.write('Running RelCalc')
+        print_log.write('---------------')
+        print_log.write('Type:     '+typ)
+        print_log.write('baseType: '+self.baseType)
+        print_log.close()
         self.baseSize=len(self.baseType)
         self.en=int(re.findall(r'\d+',typ)[0]) #number of protons
 
@@ -352,7 +361,9 @@ class CommAux():
                 self.consts['S_tm('+tag+')^2'] = numpy.nan_to_num(S_tm/C0)
                 self.consts['S_tm_2('+tag+')^2'] = numpy.nan_to_num(S_tm_2/C0)
         else:
-            print "MUPPET. Need type of interaction as static, single, double. Check code & commTest set-up"
+            print_log=open('output/log/log_Aux','a')
+            print_log.write("MUPPET. Need type of interaction as static, single, double. Check code & commTest set-up")
+            print_log.close()
             
     def PolarToCartN(self,v):
         vnew=v.copy()
@@ -4090,17 +4101,17 @@ class CommAux():
             print tag
             sys.exit(100)
 
-        outy=open('eps/v.out','w')
+        outy=open('output/eps/v.out','w')
         for i,v in enumerate(vv):
             outy.write('0 0 0\n')
             outy.write('%f\t%f\t%f\t%i\n\n\n\n' % (v[0],v[1],v[2],i+2))
         outy.close()
 
-        gnu=open('eps/gnu.gp','w')
+        gnu=open('output/eps/gnu.gp','w')
         gnu.write('set term eps enh color solid\n')
         gnu.write('set size square\n')
         gnu.write('set ticslevel 0\n')
-        gnu.write('set output \'eps/%s.eps\'\n' % tag)
+        gnu.write('set output \'output/eps/%s.eps\'\n' % tag)
         gnu.write('set xlabel \'x\'\n')
         gnu.write('set ylabel \'y\'\n')
         gnu.write('set zlabel \'z\'\n')
@@ -4108,11 +4119,11 @@ class CommAux():
         for i,v in enumerate(vv):
             if(i!=0):
                 gnu.write(',')
-            gnu.write('\'eps/v.out\' i %i u 1:2:3 noti w li,\'\' u 1:2:3:4 noti w labels' % i)
+            gnu.write('\'output/eps/v.out\' i %i u 1:2:3 noti w li,\'\' u 1:2:3:4 noti w labels' % i)
         gnu.close()
 # DS:
-        os.system('gnuplot.exe eps/gnu.gp')
-        print self.GNUFILE + ' esp/gnu.gp'
+        os.system('gnuplot.exe output/eps/gnu.gp')
+        print self.GNUFILE + ' output/esp/gnu.gp'
         return numpy.array(vv)
     
     #work out dictionary (self.maps)
@@ -4822,7 +4833,7 @@ class CommAux():
     def DoTcPlot(self,tcMin,tcMax,grid,autoRates,outfig,geofig=''):
         lin=numpy.arange(grid)
         tcList=tcMin*10**(numpy.log10(tcMax/tcMin)*lin/(grid-1))
-        outy=open('eps/outy.out','w')
+        outy=open('output/eps/outy.out','w')
         for tc in tcList:
             self.tc=tc   #s
             outy.write('%e\t' % (tc))
@@ -4844,7 +4855,7 @@ class CommAux():
         outy.close()
 
 
-        outy=open('eps/gnu.gp','w')
+        outy=open('output/eps/gnu.gp','w')
         outy.write('set term post eps color enh solid\n')
         outy.write('set size square\n')
         outy.write('set key left\n')
@@ -4853,12 +4864,12 @@ class CommAux():
         outy.write('set xlabel \'{/Symbol t}_c(s)\'\n')
         outy.write('set ylabel \'Rate(s^{-1})\'\n')
         outy.write('set title \'%i %s\'\n' % (self.sfrq,outfig))
-        outy.write('set output \'eps/%s\'\n' % (outfig))
+        outy.write('set output \'output/eps/%s\'\n' % (outfig))
         outy.write('plot ')
         for i,start in enumerate(autoRates):
             if(i!=0):
                 outy.write(',')
-            outy.write('\'eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (i+2,self.FormatStr(start),i+1))
+            outy.write('\'output/eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (i+2,self.FormatStr(start),i+1))
         #flemlab='faaa','faab','fabb','fbbb'
         #for i,flem in enumerate(flemlab):
         #    outy.write(',\'outy.out\' u 1:%i ti \'%s\'w li lw 6lt %i' % (len(autoRates)+2+i,flem,i+1))
@@ -4867,14 +4878,14 @@ class CommAux():
         #    outy.write(',\'outy.out\' u 1:%i ti \'%s\'w li lw 1 lt %i' % (len(autoRates)+len(flemlab)+2+i,flem,i+1))
         outy.write('\n')
         outy.close()
-        os.system('gnuplot.exe eps/gnu.gp')
+        os.system('gnuplot.exe output/eps/gnu.gp')
         if(self.LATEX):
             outy=open(self.LATEXFILE,'a')
             outy.write('\\begin{figure}[h]\n')
             outy.write('\center\n')
             if(geofig!=''):
-                outy.write('\\includegraphics[width=0.40\\textwidth]{eps/'+geofig+'}\n')
-            outy.write('\\includegraphics[width=0.49\\textwidth]{eps/'+outfig+'}\n')
+                outy.write('\\includegraphics[width=0.40\\textwidth]{output/eps/'+geofig+'}\n')
+            outy.write('\\includegraphics[width=0.49\\textwidth]{output/eps/'+outfig+'}\n')
             outy.write('\\caption[]{Relaxation rates versus correlation time $\\tau_c$ for spin system %s. macro=%s. %s }\n' % (self.baseTag,self.macro,self.plotTxt))
             outy.write('\end{figure} \n')
 
@@ -4914,7 +4925,7 @@ class CommAux():
         outy.write('\n')
         outy.close()
 
-        outy=open('eps/gnu.gp','w')
+        outy=open('output/eps/gnu.gp','w')
         outy.write('set term post eps color enh solid\n')
         outy.write('set size square\n')
         outy.write('set key left\n')
@@ -4922,12 +4933,12 @@ class CommAux():
         outy.write('set xlabel \'Distance, Angstroms\'\n')
         outy.write('set ylabel \'Magnetization at 200ms\'\n')
         outy.write('set title \'%i %s\'\n' % (self.sfrq,outfig))
-        outy.write('set output \'eps/%s\'\n' % (outfig))
+        outy.write('set output \'output/eps/%s\'\n' % (outfig))
         outy.write('plot ')
-        outy.write('\'eps/outy.out\' with points pt 7')
+        outy.write('\'output/eps/outy.out\' with points pt 7')
         outy.write('\n')
         outy.close()
-        os.system('gnuplot.exe eps/gnu.gp')
+        os.system('gnuplot.exe output/eps/gnu.gp')
         
         max_pos = out_matrix[numpy.argmax(out_matrix[:])]
         
@@ -4935,7 +4946,7 @@ class CommAux():
             outy=open(self.LATEXFILE,'a')
             outy.write('\\begin{figure}[h]\n')
             outy.write('\center\n')
-            outy.write('\\includegraphics[width=0.49\\textwidth]{eps/'+outfig+'}\n')
+            outy.write('\\includegraphics[width=0.49\\textwidth]{output/eps/'+outfig+'}\n')
             outy.write('\\caption[]{Rate constant against distance for protein yada. $\\tau_c$ for spin system = %s. macro=%s. Max = %.2f s %s }\n' % (self.baseTag,self.macro,max_pos,self.plotTxt))
             outy.write('\end{figure} \n')
             
@@ -4957,7 +4968,7 @@ class CommAux():
         for i in numpy.arange(steps):
             calc_matrix[:,:,i] = expm(-r_matrix[:,:] * t_arr[i])
 
-        outy=open('eps/outy.out','w')
+        outy=open('output/eps/outy.out','w')
         for i in range(len(t_arr)):
             outy.write('%e\t' % (t_arr[i]))
             outy.write('%e\t' % (calc_matrix[0,0,i]))
@@ -4968,7 +4979,7 @@ class CommAux():
         outy.write('\n')
         outy.close()
 
-        outy=open('eps/gnu.gp','w')
+        outy=open('output/eps/gnu.gp','w')
         outy.write('set term post eps color enh solid\n')
         outy.write('set size square\n')
         outy.write('set key left\n')
@@ -4976,18 +4987,18 @@ class CommAux():
         outy.write('set xlabel \'t/s\'\n')
         outy.write('set ylabel \'Magnetization\'\n')
         outy.write('set title \'%i %s\'\n' % (self.sfrq,outfig))
-        outy.write('set output \'eps/%s\'\n' % (outfig))
+        outy.write('set output \'output/eps/%s\'\n' % (outfig))
         outy.write('plot ')
-        outy.write('\'eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (2,'11',1))
+        outy.write('\'output/eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (2,'11',1))
         outy.write(',')
-        outy.write('\'eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (3,'12',2))
+        outy.write('\'output/eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (3,'12',2))
         outy.write(',')
-        outy.write('\'eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (4,'21',3))
+        outy.write('\'output/eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (4,'21',3))
         outy.write(',')
-        outy.write('\'eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (5,'22',4))
+        outy.write('\'output/eps/outy.out\' u 1:%i ti \'%s\'w li lw 9 lt %i' % (5,'22',4))
         outy.write('\n')
         outy.close()
-        os.system('gnuplot.exe eps/gnu.gp')
+        os.system('gnuplot.exe output/eps/gnu.gp')
         
         max_pos = t_arr[numpy.argmax(calc_matrix[0,0,:])]
         
@@ -4996,8 +5007,8 @@ class CommAux():
             outy.write('\\begin{figure}[h]\n')
             outy.write('\center\n')
             if(geofig!=''):
-                outy.write('\\includegraphics[width=0.40\\textwidth]{eps/'+geofig+'}\n')
-            outy.write('\\includegraphics[width=0.49\\textwidth]{eps/'+outfig+'}\n')
+                outy.write('\\includegraphics[width=0.40\\textwidth]{output/eps/'+geofig+'}\n')
+            outy.write('\\includegraphics[width=0.49\\textwidth]{output/eps/'+outfig+'}\n')
             outy.write('\\caption[]{NOESY - Magnetization transfer from methyl to external spin. $\\tau_c$ for spin system = %s. macro=%s. Max = %.2f s %s }\n' % (self.baseTag,self.macro,max_pos,self.plotTxt))
             outy.write('\end{figure} \n')
 
@@ -5006,7 +5017,7 @@ class CommAux():
         self.EvalRate(testbasis,testbasis,verb='n')  #get symbolic rates
         vals=numpy.zeros((len(testbasis),len(testbasis)))
     
-        outy=open('eps/outy.out','w')
+        outy=open('output/eps/outy.out','w')
         for i,start in enumerate(testbasis):
             for j,finish in enumerate(testbasis):
                 vals[i,j]=self.CalcRate(start,finish,verb='n')
@@ -5023,7 +5034,7 @@ class CommAux():
                 outy.write('%s\t%s\t%f\t%f\t%f\t%f\t%e\n' % (start,finish,i,j,i+0.5,j+0.5,vals[i,j]))
             outy.write('\n')
         outy.close()
-        outy=open('eps/gnu.gp','w')
+        outy=open('output/eps/gnu.gp','w')
         outy.write('set term post eps color enh solid\n')
         outy.write('set size square\n')
         outy.write('set key left\n')
@@ -5033,16 +5044,16 @@ class CommAux():
         outy.write('set palette defined(-1"blue",-0.5"green",0"white",0.5"orange",1"red")\n')
         outy.write('set pm3d map\n')
         outy.write('set title \'tc %.1e tm %.1e %s\'\n' % (self.tc,self.tm,outfig))
-        outy.write('set output \'eps/%s\'\n' % (outfig))
+        outy.write('set output \'output/eps/%s\'\n' % (outfig))
         #outy.write('plot ')
         #for i,start in enumerate(testbasis):
         #    if(i!=0):
         #        outy.write(',')
-        outy.write('splot \'eps/outy.out\' u 5:6:7:xticlabels(1):yticlabels(2) lc palette')
+        outy.write('splot \'output/eps/outy.out\' u 5:6:7:xticlabels(1):yticlabels(2) lc palette')
         outy.write('\n')
         outy.close()
 #         DS:
-        os.system('gnuplot.exe eps/gnu.gp')
+        os.system('gnuplot.exe output/eps/gnu.gp')
 #         os.system('gnuplot eps/gnu.gp')
 
         if(self.LATEX):
@@ -5053,7 +5064,7 @@ class CommAux():
             #    outy.write('\\includegraphics[width=0.40\\textwidth]{'+geofig+'}\n')
             extra='. $\\tau_c$= %.2f ns $\\tau_m=$ %.2f ps' % (1E9*self.tc,1E12*self.tm)
 
-            outy.write('\\includegraphics[width=0.49\\textwidth]{eps/'+outfig+'}\n')
+            outy.write('\\includegraphics[width=0.49\\textwidth]{output/eps/'+outfig+'}\n')
             outy.write('\\caption[]{Relaxation rates versus correlation time $\\tau_c$ for spin system %s. macro=%s. %s }\n' % (self.baseTag,self.macro,self.plotTxt+extra))
             outy.write('\end{figure} \n')
 
@@ -5132,6 +5143,7 @@ class CommAux():
     def InitLatex(self):
         if(os.path.exists(self.LATEXFILE)):
             os.system('!rm latex.tex')
+        print self.LATEXFILE
         outy=open(self.LATEXFILE,'w')
         outy.write('\\documentclass[showkeys,aps,prb,prepreint,amssymb, amsmath,nobibnotes]{revtex4}\n')
         outy.write('\\usepackage{bm,setspace}\n')
@@ -5299,7 +5311,7 @@ class CommAux():
 
         done={}
 
-        outy=open('eps/latex.tex','a')
+        outy=open('output/eps/latex.tex','a')
         outy.write('\\begin{table}\n')
         outy.write('\\begin{small}\n')
         #outy.write('\\begin{adjustwidth}{-1cm}{}\n')
@@ -5520,14 +5532,14 @@ class CommAux():
             outy.close()
 #             DS:
             os.system('pdflatex ' + self.LATEXFILE)
-            os.system('!mv latex.pdf pdf/' + self.baseTag+'.pdf')
+            os.system('!mv latex.pdf output/pdf/' + self.baseTag+'.pdf')
             os.system('!rm latex.aux latex.log')
 
     ############################################################
 
     def ReadCommDictDouble(self):
         self.commDictDouble={}
-        inny=open('lib/refDoubleComm.txt')
+        inny=open('redfield/refDoubleComm.txt')
         for line in inny.readlines():
             test=line.split()
             if(len(test)>0):
@@ -5560,7 +5572,7 @@ class CommAux():
 
     def ReadCommDictSingle(self):
         self.commDictSingle={}
-        inny=open('lib/refSingleComm.txt')
+        inny=open('redfield/refSingleComm.txt')
         for line in inny.readlines():
             test=line.split()
             if(len(test)>0):
@@ -5640,7 +5652,7 @@ class CommAux():
     #read the trace dictionary
     def ReadTraceDict(self):
         self.TraceDict={}
-        inny=open('lib/refSingleTrace.txt')
+        inny=open('redfield/refSingleTrace.txt')
         for line in inny.readlines():
             test=line.split()
             if(len(test)>0):
@@ -5857,7 +5869,7 @@ def MakeSingleCommutatorLibrary():
                 tast=vals-vols
                 refbase[key+'M'+koi]=tast
 
-    outy=open('lib/refSingleComm.txt','w')
+    outy=open('redfield/refSingleComm.txt','w')
     for key,vals in inst.base.items(): #loop over all operators
         for dip in basisDip:  #for all Hamiltonian operators
             comm1=comm(inst.base[dip],vals) #do numerical commutator 1
@@ -5929,7 +5941,7 @@ def MakeSingleTraceLibrary():
     inst.GetCSA('C1','cA',beta=0,alpha=0)  #prepare all Hamiltonian operators
     basisDip=numpy.array(inst.Aint[0])[:,1]
 
-    outy=open('lib/refSingleTrace.txt','w')
+    outy=open('redfield/refSingleTrace.txt','w')
     trRef={}
     for key,vals in inst.base.items(): #for all operators in the basis
         for koi,vols in inst.base.items(): #for all other operators in the basis
@@ -6039,7 +6051,7 @@ def MakeDoubleCommutatorLibrary():
                 #print key+'M'+koi
     #sys.exit(100)
     if(1==1):
-        outy=open('lib/refDoubleComm.txt','w')
+        outy=open('redfield/refDoubleComm.txt','w')
         for key,vals in inst.base.items():
             for dip in basisDip:
                 comm1=comm(inst.base[dip],vals)

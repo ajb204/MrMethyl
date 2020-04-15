@@ -118,7 +118,7 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     print_log.write('MAXIMUM AMINO ACID VALUE FOR NMR DATA IS = '+test)
     
     #Now we have the spin system set-up, put into it the numerical values:
-    cross.tm=0.5*10E-12
+    cross.tm=5.*10E-12
     cross.tc=2.5*10E-9
     t_point = 400*1E-3
     cross.SetFreq(600)  #MHz. Set spectrometer proton frequency
@@ -197,7 +197,7 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     dist_matrix = numpy.sqrt(numpy.sum(v_mm * v_mm, axis=2))
     
     numpy.savetxt('output/log/sim_matrix',sim_matrix)
-    numpy.savetxt('output/log/dist_matrix',dist_matrix)
+    
     
     #CAST DATA SETS INTO THE SAME INDEXING SCHEME. Choose NMR data indexing scheme as the smaller of the two.
     xrd,xrd_ab=[],[]
@@ -223,14 +223,12 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     
     
     xrd_indices,nmr_indices=numpy.array(xrd_indices),numpy.array(nmr_indices)
-#     print 'xrd_indices = ',xrd_indices
-#     print 'nmr_indices = ',nmr_indices
     ii_xrd,jj_xrd=numpy.meshgrid(xrd_indices,xrd_indices,indexing='ij')
     ii_nmr,jj_nmr=numpy.meshgrid(nmr_indices,nmr_indices,indexing='ij')
     
     #MAP THE MASK FOR MISSING DATA DOWN ONTO THE NMR DATA
     mask=numpy.zeros(ii_nmr.shape)
-    mask[ii_nmr,jj_nmr]=mask_matrix
+    mask[ii_nmr,jj_nmr]=mask_matrix[ii_nmr,jj_nmr]
     mask=numpy.logical_not(mask)
     
     #MAP XRD DATA ONTO THE NMR DATA:
@@ -238,9 +236,10 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     nmr_peaks=numpy.zeros(ii_nmr.shape)
     dist=numpy.zeros(ii_nmr.shape)
     
-    nmr_peaks[ii_nmr,jj_nmr]=cross_matrix
+    nmr_peaks[ii_nmr,jj_nmr]=cross_matrix[ii_nmr,jj_nmr]
     xrd_peaks[ii_nmr,jj_nmr]=sim_matrix[ii_xrd,jj_xrd]
     dist[ii_nmr,jj_nmr]=dist_matrix[ii_xrd,jj_xrd]
+    
     
     #CALCULATE CORRELATION BETWEEN DATA ROWS, AND CHECK A/B ASSIGNMENTS:
     #ITERATE OVER THE INDICES WHICH APPLY TO RESIDUES WITH A/B POSSIBILITIES:
@@ -248,6 +247,11 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     
     numpy.savetxt('output/log/nmr_peaks',nmr_peaks)
     numpy.savetxt('output/log/xrd_peaks',xrd_peaks)
+    numpy.savetxt('output/log/dist',dist)
+    
+    print 'DISTANCE,NMR,XRD: \n'
+    for dist,nmr,xrd in zip(dist[mask],nmr_peaks[mask],xrd_peaks[mask]):
+        print dist,nmr,xrd
     
     for i_n in numpy.arange(nmr_ab.shape[0]):
         i_a,i_b=nmr_ab[i_n,0],nmr_ab[i_n,1]
@@ -288,10 +292,6 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
             print_log.write('NEED TO SWAP '+str(i_a)+' AND '+str(i_b))
             i[i_a],i[i_b]=i_b,i_a
             j[i_a],j[i_b]=i_b,i_a
-    ii,jj=numpy.meshgrid(i,j,indexing='ij')
-    nmr_peaks=nmr_peaks[ii,jj]
-    xrd_peaks=xrd_peaks[ii,jj]
-    dist=dist[ii,jj]
     
     print_log.close()
 

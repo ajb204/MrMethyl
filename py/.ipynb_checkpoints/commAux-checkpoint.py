@@ -362,7 +362,7 @@ class CommAux():
                 self.consts['S_tm_2('+tag+')^2'] = numpy.nan_to_num(S_tm_2/C0)
         else:
             print_log=open('output/log/log_Aux','a')
-            print_log.write("MUPPET. Need type of interaction as static, single, double. Check code & commTest set-up")
+            print_log.write("MUPPET. Need type of interaction as static, single, double. Check code & commTest set-up \n")
             print_log.close()
             
     def PolarToCartN(self,v):

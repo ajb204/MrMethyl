@@ -77,11 +77,13 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     cross.macro=macro
     cross.CrossCorrHam()
     
-    #LOAD UP THE METHYLS FROM THE PDB FILE:
-    location,orientation,sites,map_key_xrd,map_index_xrd,residues=get_pdb_coord_methyl('input/1EZA.pdb')
-    
     #LOAD UP THE PEAK LIST FILE:
-    cross_matrix,reflected_matrix,d1_matrix,d2_matrix,map_key_nmr,map_index_nmr,mask_matrix=peak_file_parser('input/correlate.3')
+    peak_file_dir='input/correlate.3'
+    cross_matrix,reflected,d1,d2,c1,h1,c2,h2,map_key_nmr,map_index_nmr,pairs,mask_matrix=peak_file_parser(peak_file_dir)
+    
+    #LOAD UP THE METHYLS FROM THE PDB FILE:
+    pdb_file_dir='input/1EZA.pdb'
+    location,orientation,sites,map_key_xrd,map_index_xrd,residues=get_pdb_coord_methyl(pdb_file_dir)
     
     #DEBUGGING:
     print cross_matrix.shape
@@ -227,9 +229,15 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     ii_nmr,jj_nmr=numpy.meshgrid(nmr_indices,nmr_indices,indexing='ij')
     
     #MAP THE MASK FOR MISSING DATA DOWN ONTO THE NMR DATA
+    mask1=nmr_masker(h1,h2,c1,c2,map_key_nmr,pairs,threshold=0.10)
+    mask1=numpy.logical_not(mask1)
     mask=numpy.zeros(ii_nmr.shape)
     mask[ii_nmr,jj_nmr]=mask_matrix[ii_nmr,jj_nmr]
     mask=numpy.logical_not(mask)
+    print numpy.sum(mask)
+    mask=numpy.logical_and(mask,mask1)
+    print numpy.sum(mask)
+    
     
     #MAP XRD DATA ONTO THE NMR DATA:
     xrd_peaks=numpy.zeros(ii_nmr.shape)
@@ -250,8 +258,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     numpy.savetxt('output/log/dist',dist)
     
     print 'DISTANCE,NMR,XRD: \n'
-    for dist,nmr,xrd in zip(dist[mask],nmr_peaks[mask],xrd_peaks[mask]):
-        print dist,nmr,xrd
+    for d,nmr,xrd in zip(dist[mask],nmr_peaks[mask],xrd_peaks[mask]):
+        print d,nmr,xrd
     
     for i_n in numpy.arange(nmr_ab.shape[0]):
         i_a,i_b=nmr_ab[i_n,0],nmr_ab[i_n,1]
@@ -271,12 +279,8 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
     nmr_peaks=nmr_peaks[ii,jj]
     xrd_peaks=xrd_peaks[ii,jj]
     dist=dist[ii,jj]
-    print_log.write('TOTAL CORRELATION = '+str(pearsonr(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())[0]))
-    plt.scatter(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())
-    plt.savefig('output/eps/scatter_fig.eps')
-    plt.show()
     
-    print_log.write('REPEAT - SEE IF WE DO ANY MORE SWAPS: ')
+    print_log.write('\nREPEAT - SEE IF WE DO ANY MORE SWAPS: ')
     i,j=numpy.arange(nmr_peaks.shape[0]),numpy.arange(nmr_peaks.shape[0])
     for i_n in numpy.arange(nmr_ab.shape[0]):
         i_a,i_b=nmr_ab[i_n,0],nmr_ab[i_n,1]
@@ -293,10 +297,34 @@ def DoCH3_ExtM(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=
             i[i_a],i[i_b]=i_b,i_a
             j[i_a],j[i_b]=i_b,i_a
     
+    print_log.write('\nTOTAL CORRELATION = '+str(pearsonr(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())[0]))
+    plt.scatter(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())
+    plt.savefig('output/eps/scatter_fig_all.eps')
+    plt.show()
+    
+    print_log.write('\nDIAGONAL CORRELATION = '+str(pearsonr(nmr_peaks[i,i][mask[i,i]].flatten(),xrd_peaks[i,i][mask[i,i]].flatten())[0]))
+    plt.scatter(nmr_peaks[i,i][mask[i,i]].flatten(),xrd_peaks[i,i][mask[i,i]].flatten())
+    plt.savefig('output/eps/scatter_fig_diag.eps')
+    plt.show()
+    
+    mask[i,i]=False
+    print_log.write('\nOFF-DIAGONAL CORRELATION = '+str(pearsonr(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())[0]))
+    plt.scatter(nmr_peaks[mask].flatten(),xrd_peaks[mask].flatten())
+    plt.savefig('output/eps/scatter_fig_off_diag.eps')
+    plt.show()
+    
+    
+    
     print_log.close()
 
     
     
+    
+def peak_parser_shifts(peak_file_dir):
+    file=open(peak_file_dir,'r')
+    cross,reflected={},{}
+    d1,d2={},{}
+    c1,
     
 def string_ab_swap(string):
     if string[-1]=='A':
@@ -304,25 +332,132 @@ def string_ab_swap(string):
     elif string[-1]=='B':
         return string[:-1]+'A'    
     
+def get_pdb_coord_methyl(pdb_file):
+    #Initialize stuff - Set which file to open; initilaize lists for all atoms in file, and then result list - methyl_list
+    print pdb_file
+    file = open(pdb_file, 'r')
+    atom_list = []
+    methyl_list = {}
+    
+    #Iterate over lines in file, and fill atom_list with position, type & residue (type & number) for each atom:
+    for line in file:
+        if(line[0:4]=='ATOM'):
+#             print line
+            atom_number = line[6:12]
+            atom_name = line[13:16]
+            residue_name = line[17:20]
+            residue_number = int(line[22:26].strip())
+            x_coord = float(line[30:38])
+            y_coord = float(line[38:46])
+            z_coord = float(line[46:54])
+            
+            atom = {}
+            atom['num']  = atom_number
+            atom['ele'] = atom_name
+            atom['residue'] = residue_name + ' ' + str(residue_number)
+            atom['x'], atom['y'], atom['z'] = x_coord, y_coord, z_coord
+            atom_list.append(atom)
+
+#                 print 'ATOM = ', atom_name
+#                 print 'RESIDUE = ', residue_name
+#                 print 'X = ', x_coord
+#                 print 'Y = ', y_coord
+#                 print 'Z = ', z_coord
+#                 print line
+    
+    #Now iterate over all atoms in atom_list and group in residue (type & number):
+    residue_list = {}
+    for atom in atom_list:
+        if(atom['residue'] in residue_list):
+            residue_list[atom['residue']][atom['ele']]=(atom['x'],atom['y'],atom['z'])
+        else:
+            residue_list[atom['residue']]={}
+            residue_list[atom['residue']][atom['ele']]=(atom['x'],atom['y'],atom['z'])
+
+    #Now iterate over residues and generate methyls from ILE, LEU, VAL:
+    #General strategy - Each methyl consits of 3 vectors - c_m, c_a, c_b. These totally specify a methyl groups position & orientation, *including* psi angle
+    #REF:
+#     def CalcMetGeom(c_m, c_a, c_b, r_m=1.09, theta_m=numpy.arccos(1./3.)):
+    residues = []
+    count_ile, count_leu, count_val,count_ala = 0,0,0,0
+    for key in residue_list:
+        residue = residue_list[key]
+        if(key[0:3]=='ILE'):
+            residues.append(key)
+            methyl = CalcMetGeom(residue['CD1'], residue['CG1'], residue['CB '])
+            methyl_list[key+' A'] = methyl
+            count_ile+=1
+        elif(key[0:3]=='LEU'):
+            residues.append(key)
+            methyl = CalcMetGeom(residue['CD1'], residue['CG '], residue['CB '])
+            methyl_list[key + ' A'] = methyl
+            methyl = CalcMetGeom(residue['CD2'], residue['CG '], residue['CB '])
+            methyl_list[key + ' B'] = methyl
+            count_leu+=1
+        elif(key[0:3]=='VAL'):
+            residues.append(key)
+            methyl = CalcMetGeom(residue['CG1'], residue['CB '], residue['CA '])
+            methyl_list[key + ' A'] = methyl
+            methyl = CalcMetGeom(residue['CG2'], residue['CB '], residue['CA '])
+            methyl_list[key + ' B'] = methyl
+            count_val+=1
+        elif(key[0:3]=='ALA'):
+            residues.append(key)
+            methyl=CalcMetGeom(residue['CB '],residue['CA '],residue['C  '])
+            methyl_list[key+' A']=methyl
+            count_ala+=1
+
+    #Want to return: mapping dictionaries from methyl residue name & number (EG. LEU 113 A) to numpy index, and index to name.
+    #3 numpy arrays - N*3 array containing coordinates of methyl C (c_m), N*3 for orientation (v_m), and N*3*3 positions of methyl H (sites)
+#     methyl = {'loc':c_m, 'orientation':v_m, 'sites':numpy.array(sites)}
+    num = len(methyl_list)
+    location = numpy.zeros((num, 3))
+    orientation = numpy.zeros((num, 3))
+    sites = numpy.zeros((num, 3, 3))
+    map_key = {}
+    map_index = {}
+    i = 0 #Index which incremented to slot methyls into numpy arrays
+    print 'count_leu = ', count_leu
+    print 'count_val = ', count_val
+    print 'count_ile = ', count_ile
+    print 'count_ala = ', count_ala
+    for key in methyl_list:
+        location[i, :] = methyl_list[key]['loc']
+        orientation[i, :] = methyl_list[key]['orientation']
+        sites[i, :, :] = methyl_list[key]['sites']
+        map_key[key] = i
+        map_index[i] = key
+        i+=1
+        
+    return location, orientation, sites, map_key, map_index, list(set(residues))
+
 def peak_file_parser(peak_file_dir):
     file = open(peak_file_dir, 'r')
     cross,reflected={},{}
     diag_1,diag_2={},{}
+    c1_shift,c2_shift={},{}
+    h1_shift,h2_shift={},{}
     for line in file:
         data = line.split()
         res1 = residue_parser(data[0])
         res2 = residue_parser(data[1])
+        c1,h1=data[2],data[3]
+        c2,h2=data[4],data[5]
         v1,v2=data[6],data[7]
         a1,a2=data[14],data[15]
         if not(res1 in cross):
             cross[res1]={}
             reflected[res1]={}
-            diag_2[res1]={}
             diag_1[res1]={}
+            diag_2[res1]={}
+            c1_shift[res1],c2_shift[res1]={},{}
+            h1_shift[res1],h2_shift[res1]={},{}
         cross[res1][res2]=v1
         reflected[res1][res2]=v2
         diag_1[res1][res2]=a1
         diag_2[res1][res2]=a2
+        c1_shift[res1][res2],c2_shift[res1][res2]=c1,c2
+        h1_shift[res1][res2],h2_shift[res1][res2]=h1,h2
     map_key,map_index={},{}
     i=0
     for res1 in cross:
@@ -331,19 +466,51 @@ def peak_file_parser(peak_file_dir):
         i+=1
     
     num = len(cross)
-    cross_matrix, reflected_matrix, d1_matrix, d2_matrix = numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num))
+    cross_matrix,reflected_matrix,d1_matrix,d2_matrix=numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num))
+    c1_matrix,h1_matrix,c2_matrix,h2_matrix=numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num)),numpy.zeros((num,num))
     mask_matrix=numpy.ones((num,num),dtype=bool)
+    pairs=[]
     for res1 in cross:
         for res2 in cross[res1]:
+            pairs.append((res1,res2))
             i1,i2=map_key[res1],map_key[res2]
             cross_matrix[i1,i2]=cross[res1][res2]
             reflected_matrix[i1,i2]=reflected[res1][res2]
             d1_matrix[i1,i2]=diag_1[res1][res2]
             d2_matrix[i1,i2]=diag_2[res1][res2]
+            c1_matrix[i1,i2],c2_matrix[i1,i2]=c1_shift[res1][res2],c2_shift[res1][res2]
+            h1_matrix[i1,i2],h2_matrix[i1,i2]=h1_shift[res1][res2],h2_shift[res1][res2]
             mask_matrix[i1,i2]=False
     
-    return cross_matrix,reflected_matrix,d1_matrix,d2_matrix,map_key,map_index,mask_matrix
+    return cross_matrix,reflected_matrix,d1_matrix,d2_matrix,c1_matrix,h1_matrix,c2_matrix,h2_matrix,map_key,map_index,pairs,mask_matrix
+
+def nmr_masker(h1,h2,c1,c2,map_key,pairs,threshold=0.01):
+    #Takes in 4 2D square matrices. Will then calculate the difference between peaks, in an expanded 4D matrix. 
+    #If two peaks are too close, IE closer than the threshold level, we eliminate them from the data set
+    #IE we mask them from the 2D square matrix, setting the correspond indices to True in the mask
     
+    #SETUP MATRICES TO STORE DATA:
+    num=h1.shape[0]
+    mask=numpy.zeros((num,num),dtype=bool)
+    i_m,j_m=[],[]
+    for peak1 in pairs:
+        for peak2 in pairs:
+            i,j,k,l=map_key[peak1[0]],map_key[peak1[1]],map_key[peak2[0]],map_key[peak2[1]]
+            diff=2.*numpy.sqrt(((h1[i,j]-h1[k,l])/(h1[i,j]+h1[k,l]))**2 + ((h2[i,j]-h2[k,l])/(h2[i,j]+h2[k,l]))**2 + ((c1[i,j]-c1[k,l])/(c1[i,j]+c1[k,l]))**2 + ((c2[i,j]-c2[k,l])/(c2[i,j]+c2[k,l]))**2)
+            if (diff<threshold) and (peak1[0]!=peak2[0]) and (peak1[1]!=peak2[1]):
+                i_m.append(i)
+                i_m.append(k)
+                j_m.append(j)
+                j_m.append(l)
+#                 mask[i,j],mask[k,l]=True,True
+#                 print 'RESIDUES WHICH ARE MASKED ARE = '
+#                 print peak1,': ',h1[i,j],c1[i,j],h2[i,j],c2[i,j],'DIST = ',dist[i,j]
+#                 print peak2,': ',h1[k,l],c1[k,l],h2[k,l],c2[k,l],'DIST = ',dist[k,l]
+#                 print ' DIFF = ',diff,'\n'
+    i_m,j_m=numpy.array(i_m),numpy.array(j_m)
+    ii,jj=numpy.meshgrid(i_m,j_m,indexing='ij')
+    mask[ii,jj]=True
+    return mask
         
 def residue_parser(residue_str):
     res_letter = residue_str[0]
@@ -367,6 +534,7 @@ def residue_parser(residue_str):
         print 'BLANK AMINO ACID CODE. AMINO ACID STRING TO BE PARSED = ',residue_str
         sys.exit(100)
     return out_str
+
     
 def methyl_list_generator(residue_list):
     #EXAMPLES OF RESIDUE NAMES:

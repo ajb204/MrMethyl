@@ -1,0 +1,9 @@
+# I219	V235 - Near/Far: In the right direction. 
+# I24	L138 - Near/Far: Prediction is pretty good, right ballpark.
+# I133	L80 - EQUIDISTANT: #Comment - Whilst intensities of cross-peaks vary by factor of 3, this is due to *diagonal* peak intensity varying in same manner
+# A104	L137 - Near/Far: Qualitatively correct. Diagonal for L137D2C-H seems v off??
+# I141	L137 - Near/Far: Trend is reversed to what might be expected.
+# V36 I31 - Near/Far: In the right ball-park for difference
+# I133	V130 - Equidistant: Qualitatively correct, but not close. Pretty internal?
+# I180	V227 - Equidistant: #Comment - This guy is beautiful! Check against predictions! Have 2 pairings both at 5.2A! *But* v different intensities, not explained by initiation, *but* might be explained by orientation!
+

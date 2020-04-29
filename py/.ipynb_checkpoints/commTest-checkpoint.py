@@ -138,6 +138,8 @@ class mr_noesy():
         
         #Run the optimization:
         x_init=self.pack()
+        print x_init
+        print x_init.shape
         x_opt=leastsq(self.chi_func,x_init)
         self.unpack(x_opt[0])
         
@@ -146,11 +148,9 @@ class mr_noesy():
 
     
     def unpack(self,x):
-        #DEBUGGING:
-        print x[0]
-        print x[1]
-        print x[2]
-        
+#         self.cross.tm=x[0,1]
+#         self.cross.tc=x[1,1]
+#         self.init_intensities=x[:,0]
         self.cross.tm=x[0]
         self.cross.tc=x[1]
         self.init_intensities=x[2:]
@@ -158,6 +158,9 @@ class mr_noesy():
     def pack(self):
         x=numpy.array([self.cross.tm,self.cross.tc])
         x=numpy.append(x,self.init_intensities)
+#         x=numpy.zeros((len(self.init_intensities),2))
+#         x[:,0]=self.init_intensities
+#         x[0,1],x[1,1]=self.cross.tm,self.cross.tc
         return x
         
     
@@ -165,7 +168,8 @@ class mr_noesy():
         self.unpack(x)
         self.CalcModel()
         print 'chi2',numpy.sum((self.nmr_peaks-self.xrd_peaks)**2.)
-        return self.nmr_peaks-self.xrd_peaks
+        print 'difference matrix = \n',self.nmr_peaks-self.xrd_peaks
+        return (self.nmr_peaks-self.xrd_peaks).flatten()
         
     
     def CalcModel(self):
@@ -197,7 +201,6 @@ class mr_noesy():
         sim_matrix=numpy.average(result_matrix[:,:,:], axis=2)
         #MATCH SIMULATED XRD DATA ONTO NMR INDICES:
         self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.ii_nmr]
-        print self.xrd_peaks
     
     
 

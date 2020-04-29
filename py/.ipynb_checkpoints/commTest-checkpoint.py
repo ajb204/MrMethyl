@@ -89,6 +89,9 @@ class mr_noesy():
         diag_mask=numpy.ones(self.mask.shape,dtype=bool)
         numpy.fill_diagonal(diag_mask,False) 
         self.mask=numpy.logical_and(self.mask,diag_mask)
+        print 'NUMBER OF PEAKS INCLUDED IN OPTIMIZATION: ',numpy.sum(self.mask)
+        print 'NUMBER OF RESIDUES INCLUDED IN WOBBLE-MASK:',numpy.sqrt(numpy.sum(wobble_mask))
+        print 'NUMBER OF PEAKS INCLUDED IN DATA SET MASK:',numpy.sum(mask_matrix)
         #Load up the PDB file:
         location,orientation,sites,self.map_key_xrd,self.map_index_xrd,self.residues=self.get_pdb_coord_methyl(pdb_file_dir)
         #Set-up other parameters:
@@ -130,7 +133,8 @@ class mr_noesy():
         self.xrd_peaks=numpy.zeros(self.ii_nmr.shape)
         #Initialize the initial intensities as the diagonal NMR peaks (this should do as a halfway decent proxy)
         d=numpy.arange(len(nmr_indices))
-        self.init_intensities=self.nmr_peaks[d,d]
+        self.init_intensities=numpy.zeros(self.nmr_peaks.shape)
+        self.init_intensities[d,d]=self.nmr_peaks[d,d]
         #Initialize t_m,t_c:
         self.cross.tm=25.E-12
         self.cross.tc=25.E-9
@@ -153,11 +157,13 @@ class mr_noesy():
 #         self.init_intensities=x[:,0]
         self.cross.tm=x[0]
         self.cross.tc=x[1]
-        self.init_intensities=x[2:]
+        d=numpy.arange(self.nmr_peaks.shape[0])
+        self.init_intensities[d,d][self.mask[d,d]]=x[2:]
     
     def pack(self):
+        d=numpy.arange(self.nmr_peaks.shape[0])
         x=numpy.array([self.cross.tm,self.cross.tc])
-        x=numpy.append(x,self.init_intensities)
+        x=numpy.append(x,self.init_intensities[d,d][self.mask[d,d]])
 #         x=numpy.zeros((len(self.init_intensities),2))
 #         x[:,0]=self.init_intensities
 #         x[0,1],x[1,1]=self.cross.tm,self.cross.tc
@@ -167,9 +173,9 @@ class mr_noesy():
     def chi_func(self,x):
         self.unpack(x)
         self.CalcModel()
-        print 'chi2',numpy.sum((self.nmr_peaks-self.xrd_peaks)**2.)
-        print 'difference matrix = \n',self.nmr_peaks-self.xrd_peaks
-        return (self.nmr_peaks-self.xrd_peaks).flatten()
+        print 'chi2',numpy.sum((self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask])**2.)
+        print 'difference matrix = \n',self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask]
+        return (self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask]).flatten()
         
     
     def CalcModel(self):
@@ -200,7 +206,7 @@ class mr_noesy():
         #AVERAGE OVER 2000 samples:
         sim_matrix=numpy.average(result_matrix[:,:,:], axis=2)
         #MATCH SIMULATED XRD DATA ONTO NMR INDICES:
-        self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.ii_nmr]
+        self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.ii_nmr,self.jj_nmr]
     
     
 
@@ -215,7 +221,7 @@ class mr_noesy():
         
         
     #NOW HAVE ALL THE OTHER RANDOM FUNCTIONS:    
-    def wobble_masker(self,cross_matrix,map_index_nmr,map_key_nmr,c1,h1,c2,h2,lim=0.85):
+    def wobble_masker(self,cross_matrix,map_index_nmr,map_key_nmr,c1,h1,c2,h2,lim=0.80):
         indices=[]
         for i in numpy.arange(cross_matrix.shape[0]):
             res=map_index_nmr[i]

@@ -88,7 +88,8 @@ class mr_noesy():
         #Mask out the diagonals: (I think we want to do this?)
         diag_mask=numpy.ones(self.mask.shape,dtype=bool)
         numpy.fill_diagonal(diag_mask,False) 
-        self.mask=numpy.logical_and(self.mask,diag_mask)
+        self.peak_mask=numpy.logical_and(self.mask,diag_mask)
+        
         print 'NUMBER OF PEAKS INCLUDED IN OPTIMIZATION: ',numpy.sum(self.mask)
         print 'NUMBER OF RESIDUES INCLUDED IN WOBBLE-MASK:',numpy.sqrt(numpy.sum(wobble_mask))
         print 'NUMBER OF PEAKS INCLUDED IN DATA SET MASK:',numpy.sum(mask_matrix)
@@ -146,6 +147,7 @@ class mr_noesy():
         print x_init.shape
         x_opt=leastsq(self.chi_func,x_init)
         self.unpack(x_opt[0])
+        numpy.savetxt('/output/log/optimized_parameters',x_opt)
         
     
     
@@ -164,18 +166,16 @@ class mr_noesy():
         d=numpy.arange(self.nmr_peaks.shape[0])
         x=numpy.array([self.cross.tm,self.cross.tc])
         x=numpy.append(x,self.init_intensities[d,d][self.mask[d,d]])
-#         x=numpy.zeros((len(self.init_intensities),2))
-#         x[:,0]=self.init_intensities
-#         x[0,1],x[1,1]=self.cross.tm,self.cross.tc
         return x
         
     
     def chi_func(self,x):
+        print x
         self.unpack(x)
         self.CalcModel()
-        print 'chi2',numpy.sum((self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask])**2.)
-        print 'difference matrix = \n',self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask]
-        return (self.nmr_peaks[self.mask]-self.xrd_peaks[self.mask]).flatten()
+        print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+        print 'difference matrix = \n',self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]
+        return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
         
     
     def CalcModel(self):
@@ -207,6 +207,7 @@ class mr_noesy():
         sim_matrix=numpy.average(result_matrix[:,:,:], axis=2)
         #MATCH SIMULATED XRD DATA ONTO NMR INDICES:
         self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.ii_nmr,self.jj_nmr]
+        print self.init_intensities
     
     
 

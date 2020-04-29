@@ -11,6 +11,8 @@ from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 from scipy import mat,zeros
 from scipy.optimize import leastsq
+from scipy.optimize import least_squares
+
 
 ############################################################
 # START FROM HERE!
@@ -151,13 +153,11 @@ class mr_noesy():
         
         self.cross.tm=x[0]
         self.cross.tc=x[1]
-        self.init_intensities=x[2]
+        self.init_intensities=x[2:]
     
     def pack(self):
-        x=[]
-        x.append(self.cross.tm)
-        x.append(self.cross.tc)
-        x.append(self.init_intensities)
+        x=numpy.array([self.cross.tm,self.cross.tc])
+        x=numpy.append(x,self.init_intensities)
         return x
         
     

@@ -135,13 +135,14 @@ class mr_noesy():
         #Initialize the initial intensities as the diagonal NMR peaks (this should do as a halfway decent proxy)
         d=numpy.arange(len(nmr_indices))
         self.init_intensities=numpy.zeros(self.nmr_peaks.shape)
-        self.init_intensities[d,d]=5.E7
+        self.init_intensities[d,d]=self.nmr_peaks[self.ii_nmr,self.jj_nmr][d,d]*1.5
         #Initialize t_m,t_c:
         self.cross.tm=1.E-12
         self.cross.tc=30.E-9
         
         
-        
+        #DEBUGGING/TEST CASE:
+        print self.nmr_peaks.shape
         #Run the optimization:
         x_init=self.pack()
         print x_init
@@ -156,7 +157,7 @@ class mr_noesy():
         #Set up the x_scale array
         x_scale=numpy.zeros(x_init.shape)
         x_scale[0],x_scale[1]=1.,1.
-        x_scale[2:]=100.
+        x_scale[2:]=1.
         #Now do optimization:
         opt=least_squares(self.chi_func,x_init,bounds=(lower,upper),x_scale=x_scale,verbose=2)
         self.unpack(opt.x)
@@ -665,7 +666,7 @@ class mr_noesy():
         return location, orientation, sites, map_key, map_index, list(set(residues))
 
 #     self,peak_file_dir,peak_list_dir,pdb_file_dir,macro=False, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=True, irreducible=False, num=False):
-mr_noesy('input/correlate.3','input/ein_noes','input/1EZA.pdb')
+mr_noesy('input/correlate_test','input/ein_noes_test','input/1EZA_test')
 # def DoTestSystem(macro=True, ax=True, xx=True, cx=True, ca=True, sparse=True, sym=True, irreducible=False, num=False):
 #     #First set up the spin system and then cross-correlate:
 #     print 'Calculating methyl-methyl rates'

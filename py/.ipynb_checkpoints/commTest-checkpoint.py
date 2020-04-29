@@ -148,15 +148,15 @@ class mr_noesy():
         print x_init.shape
         #Set up bounds arrays:
         lower=numpy.zeros(x_init.shape)
-        lower[0],lower[1]=1.E-13,1.E-9
-        lower[2:]=3.E7
+        lower[0],lower[1]=0.1,1.
+        lower[2:]=0.1
         upper=numpy.zeros(x_init.shape)
-        upper[0],upper[1]=1.E-10,1.E-7
-        upper[2:]=1.E11
+        upper[0],upper[1]=1.E2,1.E2
+        upper[2:]=2.E1
         #Set up the x_scale array
         x_scale=numpy.zeros(x_init.shape)
-        x_scale[0],x_scale[1]=1.E-12,1.E-9
-        x_scale[2:]=1.E10
+        x_scale[0],x_scale[1]=1.,1.
+        x_scale[2:]=100.
         #Now do optimization:
         opt=least_squares(self.chi_func,x_init,bounds=(lower,upper),x_scale=x_scale,verbose=2)
         self.unpack(opt.x)
@@ -171,23 +171,23 @@ class mr_noesy():
 #         self.cross.tm=x[0,1]
 #         self.cross.tc=x[1,1]
 #         self.init_intensities=x[:,0]
-        self.cross.tm=x[0]
-        self.cross.tc=x[1]
+        self.cross.tm=x[0]*1.E-12
+        self.cross.tc=x[1]*1.E-9
         d=numpy.arange(self.nmr_peaks.shape[0])
-        self.init_intensities[d,d][self.mask[d,d]]=x[2:]
+        self.init_intensities[d,d][self.mask[d,d]]=x[2:]*1.E8
     
     def pack(self):
         d=numpy.arange(self.nmr_peaks.shape[0])
-        x=numpy.array([self.cross.tm,self.cross.tc])
-        x=numpy.append(x,self.init_intensities[d,d][self.mask[d,d]])
+        x=numpy.array([self.cross.tm*1.E12,self.cross.tc*1.E9])
+        x=numpy.append(x,self.init_intensities[d,d][self.mask[d,d]]*1.E-8)
         return x
         
     
     def chi_func(self,x):
-#         print x
+        print x[0:5]
         self.unpack(x)
         self.CalcModel()
-#         print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+        print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
         return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
         
     

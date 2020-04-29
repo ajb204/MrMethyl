@@ -153,7 +153,12 @@ class mr_noesy():
         upper=numpy.zeros(x_init.shape)
         upper[0],upper[1]=1.E-10,1.E-7
         upper[2:]=1.E11
-        opt=least_squares(self.chi_func,x_init,bounds=(lower,upper))
+        #Set up the x_scale array
+        x_scale=numpy.zeros(x_init.shape)
+        x_scale[0],x_scale[1]=1.E-12,1.E-9
+        x_scale[2:]=1.E10
+        #Now do optimization:
+        opt=least_squares(self.chi_func,x_init,bounds=(lower,upper),x_scale=x_scale,verbose=2)
         self.unpack(opt.x)
         print'OPTIMIZED PARAMETERS: \n',opt
         numpy.savetxt('output/log/optimized_parameters',opt.x)
@@ -179,10 +184,10 @@ class mr_noesy():
         
     
     def chi_func(self,x):
-        print x
+#         print x
         self.unpack(x)
         self.CalcModel()
-        print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+#         print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
         return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
         
     

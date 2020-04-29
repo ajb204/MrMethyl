@@ -135,7 +135,7 @@ class mr_noesy():
         #Initialize the initial intensities as the diagonal NMR peaks (this should do as a halfway decent proxy)
         d=numpy.arange(len(nmr_indices))
         self.init_intensities=numpy.zeros(self.nmr_peaks.shape)
-        self.init_intensities[d,d]=self.nmr_peaks[self.ii_nmr,self.jj_nmr][d,d]*1.5
+        self.init_intensities[d,d]=self.nmr_peaks[self.ii_nmr,self.jj_nmr][d,d]*4.
         #Initialize t_m,t_c:
         self.cross.tm=1.E-12
         self.cross.tc=30.E-9
@@ -176,6 +176,7 @@ class mr_noesy():
         self.cross.tc=x[1]*1.E-9
         d=numpy.arange(self.nmr_peaks.shape[0])
         self.init_intensities[d,d][self.mask[d,d]]=x[2:]*1.E8
+        print self.init_intensities
     
     def pack(self):
         d=numpy.arange(self.nmr_peaks.shape[0])
@@ -189,6 +190,10 @@ class mr_noesy():
         self.unpack(x)
         self.CalcModel()
         print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+        print 'xrd_peaks',self.xrd_peaks
+        print 'nmr_peaks',self.nmr_peaks
+        print 'difference',self.nmr_peaks-self.xrd_peaks
+        print'\n'
         return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
         
     

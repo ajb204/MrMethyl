@@ -135,20 +135,28 @@ class mr_noesy():
         #Initialize the initial intensities as the diagonal NMR peaks (this should do as a halfway decent proxy)
         d=numpy.arange(len(nmr_indices))
         self.init_intensities=numpy.zeros(self.nmr_peaks.shape)
-        self.init_intensities[d,d]=self.nmr_peaks[d,d]
+        self.init_intensities[d,d]=5.E7
         #Initialize t_m,t_c:
-        self.cross.tm=25.E-12
-        self.cross.tc=25.E-9
+        self.cross.tm=1.E-12
+        self.cross.tc=30.E-9
+        
         
         
         #Run the optimization:
         x_init=self.pack()
         print x_init
         print x_init.shape
-        x_opt=least_squares(self.chi_func,x_init,bounds=(1.E6,1.E12))
-        self.unpack(x_opt[0])
-        print'OPTIMIZED PARAMETERS: \n',x_opt
-        numpy.savetxt('output/log/optimized_parameters',x_opt[0])
+        #Set up bounds arrays:
+        lower=numpy.zeros(x_init.shape)
+        lower[0],lower[1]=1.E-13,1.E-9
+        lower[2:]=3.E7
+        upper=numpy.zeros(x_init.shape)
+        upper[0],upper[1]=1.E-10,1.E-7
+        upper[2:]=1.E11
+        opt=least_squares(self.chi_func,x_init,bounds=(lower,upper))
+        self.unpack(opt.x)
+        print'OPTIMIZED PARAMETERS: \n',opt
+        numpy.savetxt('output/log/optimized_parameters',opt.x)
         
     
     

@@ -2594,9 +2594,9 @@ class CommAux():
             tast+=tmp
         if(verb=='y'):
             print 'Rate constant:',start,'on',finish,'=',tast
-        print
-        print self.tc,self.tm
-        print tast
+        #print
+        #print self.tc,self.tm
+        #print tast
 
         return tast
 

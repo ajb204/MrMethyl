@@ -176,7 +176,7 @@ class mr_noesy():
         #print len(self.nmr_peaks[self.peak_masl
         x0=leastsq(self.chi_func,x_init)
         self.unpack(x0[0])
-        print 'Final chi2:  ',self.GetChi2(x_init)
+        print 'Final chi2:  ',self.GetChi2(x0[0])
         print x0[0]
         #return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
 
@@ -232,8 +232,10 @@ class mr_noesy():
         num_methyls=r_cross.shape[0]
         result_matrix=numpy.zeros((num_methyls,num_methyls,self.num_samples))
         #Calculate intensities by repeating for 2000 combinations:
+
         for rep in numpy.arange(self.num_samples):
             list_methyls=self.methyl_list_generator(self.residues)
+            #print list_methyls
             index_list=numpy.array([self.map_key_xrd[x] for x in list_methyls])
             rate_matrix=numpy.zeros((len(index_list),len(index_list)))
             exp_matrix=numpy.zeros((len(index_list),len(index_list)))
@@ -248,10 +250,11 @@ class mr_noesy():
             rate_matrix[x,y]=numpy.sum((r_auto[ii,jj]-r_auto[ii,ii]),axis=1)+r_auto[i,j]
             exp_matrix[:,:]=expm(-rate_matrix[:,:]*self.tau)
             result_matrix[ii,jj,rep]=exp_matrix[xx,yy]
-
+        #print result_matrix
+            
         #AVERAGE OVER 2000 samples:
         sim_matrix=numpy.average(result_matrix[:,:,:], axis=2)
-        #print sim_matrix
+        #print sim_matrix*self.init_intensities[self.jj_nmr,self.jj_nmr]
 
         #MATCH SIMULATED XRD DATA ONTO NMR INDICES:
         self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.jj_nmr,self.jj_nmr]

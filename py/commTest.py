@@ -177,26 +177,34 @@ class mr_noesy():
         x0=leastsq(self.chi_func,x_init)
         self.unpack(x0[0])
         print 'Final chi2:  ',self.GetChi2(x0[0])
-        print x0[0]
-        #return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
+        print'OPTIMIZED PARAMETERS: \n',x0[0]
+        numpy.savetxt('output/log/optimized_parameters',x0[0])
 
-        #self.unpack(opt.x)
-        #print'OPTIMIZED PARAMETERS: \n',opt
-        #numpy.savetxt('output/log/optimized_parameters',opt.x)
-        
+
+        outy=open('output/outpars.out','w')
+        for i in range(len(self.nmr_peaks[self.peak_mask])):
+            outy.write('%e\t%e\n' % (self.nmr_peaks[self.peak_mask][i],self.xrd_peaks[self.peak_mask][i]))
+        outy.close()
+        #print self.nmr_peaks[self.peak_mask]
+        #print self.xrd_peaks[self.peak_mask]
     
-    
+        print 'R2:',(scipy.stats.pearsonr(self.nmr_peaks[self.peak_mask],self.xrd_peaks[self.peak_mask]))[0]**2.
+        print 'aveErr%:',  numpy.average(numpy.fabs(self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])/numpy.max(self.nmr_peaks[self.peak_mask])*100)
 
     
     def unpack(self,x):
 #         self.cross.tm=x[0,1]
 #         self.cross.tc=x[1,1]
 #         self.init_intensities=x[:,0]
-
         self.cross.tm=x[0]*1E-12
         self.cross.tc=x[1]*1E-9
         d=numpy.arange(self.nmr_peaks.shape[0])
-        self.init_intensities[d,d][self.mask[d,d]]=x[2:]*1E8
+        #self.init_intensities[d,d][self.mask[d,d]]=copy.deepcopy(x[2:]*1E8)
+        self.init_intensities[self.mask[d,d][d],self.mask[d,d][d]]=copy.deepcopy(x[2:]*1E8)
+        
+        #print '%.9e\t%.9e\t%.9e' % (x[2],x[3],x[4])
+        #print '%.9e\t%.9e\t%.9e' % (self.init_intensities[0,0],self.init_intensities[1,1],self.init_intensities[2,2])
+
         #print self.init_intensities
     
     def pack(self):

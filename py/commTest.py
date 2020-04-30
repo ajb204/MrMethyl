@@ -100,7 +100,7 @@ class mr_noesy():
         cA=20.
         cX=1.
         self.tau=400*1E-3
-        self.num_samples=2000
+        self.num_samples=1  #SET BY AJB: WAS 2000
         #Assemble the basis set:
         self.cross.Assemble(('H2z','H3z','H4z'),'M1z')
         self.cross.Assemble(('H6z','H7z','H8z'),'M2z')
@@ -123,6 +123,10 @@ class mr_noesy():
         xrd_indices,nmr_indices=numpy.array(xrd_indices),numpy.array(nmr_indices)
         self.ii_xrd,self.jj_xrd=numpy.meshgrid(xrd_indices,xrd_indices,indexing='ij')
         self.ii_nmr,self.jj_nmr=numpy.meshgrid(nmr_indices,nmr_indices,indexing='ij')
+
+        #print self.ii_nmr.shape
+        #sys.exit(100)
+
         #Create and calculate distance matrix:
         self.dist=numpy.zeros(self.ii_nmr.shape)
         dist_matrix=numpy.sqrt(numpy.sum(v_mm*v_mm,axis=2))
@@ -159,10 +163,26 @@ class mr_noesy():
         x_scale[0],x_scale[1]=1.,1.
         x_scale[2:]=1.
         #Now do optimization:
-        opt=least_squares(self.chi_func,x_init,bounds=(lower,upper),x_scale=x_scale,verbose=2)
-        self.unpack(opt.x)
-        print'OPTIMIZED PARAMETERS: \n',opt
-        numpy.savetxt('output/log/optimized_parameters',opt.x)
+
+
+        #opt=least_squares(self.chi_func,x_init,bounds=(lower,upper),x_scale=x_scale,verbose=2)
+        #opt=least_squares(self.chi_func,x_init,verbose=2)
+
+        print 'xinit:',x_init
+        print 'Initial model run:',self.GetChi2(x_init)
+        
+        print 'Initial chi2:',self.GetChi2(x_init)
+        #sys.exit(100)
+        #print len(self.nmr_peaks[self.peak_masl
+        x0=leastsq(self.chi_func,x_init)
+        self.unpack(x0[0])
+        print 'Final chi2:  ',self.GetChi2(x_init)
+        print x0[0]
+        #return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
+
+        #self.unpack(opt.x)
+        #print'OPTIMIZED PARAMETERS: \n',opt
+        #numpy.savetxt('output/log/optimized_parameters',opt.x)
         
     
     
@@ -172,11 +192,12 @@ class mr_noesy():
 #         self.cross.tm=x[0,1]
 #         self.cross.tc=x[1,1]
 #         self.init_intensities=x[:,0]
-        self.cross.tm=x[0]*1.E-12
-        self.cross.tc=x[1]*1.E-9
+
+        self.cross.tm=x[0]*1E-12
+        self.cross.tc=x[1]*1E-9
         d=numpy.arange(self.nmr_peaks.shape[0])
-        self.init_intensities[d,d][self.mask[d,d]]=x[2:]*1.E8
-        print self.init_intensities
+        self.init_intensities[d,d][self.mask[d,d]]=x[2:]*1E8
+        #print self.init_intensities
     
     def pack(self):
         d=numpy.arange(self.nmr_peaks.shape[0])
@@ -184,23 +205,29 @@ class mr_noesy():
         x=numpy.append(x,self.init_intensities[d,d][self.mask[d,d]]*1.E-8)
         return x
         
-    
-    def chi_func(self,x):
-        print x[0:5]
+    def GetChi2(self,x):
         self.unpack(x)
         self.CalcModel()
-        print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
-        print 'xrd_peaks',self.xrd_peaks
-        print 'nmr_peaks',self.nmr_peaks
-        print 'difference',self.nmr_peaks-self.xrd_peaks
-        print'\n'
+        return numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+    
+    def chi_func(self,x):
+        #print x[0:5]
+        self.unpack(x)
+        self.CalcModel()
+        #print 'chi2',numpy.sum((self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask])**2.)
+        #print 'xrd_peaks',self.xrd_peaks
+        #print 'nmr_peaks',self.nmr_peaks
+        #print 'difference',self.nmr_peaks-self.xrd_peaks
+        #print'\n'
+        #print len(x)
+        #print self.nmr_peaks[self.peak_mask].shape
         return (self.nmr_peaks[self.peak_mask]-self.xrd_peaks[self.peak_mask]).flatten()
         
     
     def CalcModel(self):
         #Calculate the rates:
-        r_cross=self.cross.CalcRate('M1z', 'M2z')
-        r_auto=self.cross.CalcRate('M1z', 'M1z')
+        r_cross=self.cross.CalcRate('M1z', 'M2z',verb='n')
+        r_auto=self.cross.CalcRate('M1z', 'M1z',verb='n')
         #Create matrices to store results:
         num_methyls=r_cross.shape[0]
         result_matrix=numpy.zeros((num_methyls,num_methyls,self.num_samples))
@@ -224,9 +251,11 @@ class mr_noesy():
 
         #AVERAGE OVER 2000 samples:
         sim_matrix=numpy.average(result_matrix[:,:,:], axis=2)
+        #print sim_matrix
+
         #MATCH SIMULATED XRD DATA ONTO NMR INDICES:
         self.xrd_peaks[self.ii_nmr,self.jj_nmr]=sim_matrix[self.ii_xrd,self.jj_xrd]*self.init_intensities[self.jj_nmr,self.jj_nmr]
-    
+
     
 
         

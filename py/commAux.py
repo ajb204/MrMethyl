@@ -566,7 +566,7 @@ class CommAux():
     def MakeOp(self,coh,save=True):
         #print 'making',coh,self.SYM
         if(coh in self.baseOp.keys()):
-            print coh,'already in basis'
+            #print coh,'already in basis'
             if(save==False and self.SYM==False):
                 return self.base[coh]
             else:
@@ -1326,7 +1326,7 @@ class CommAux():
         else:
             postOp=self.baseOp[Post]
 
-        print 'Number of double commutators to close:',len(self.blist.keys())
+        #print 'Number of double commutators to close:',len(self.blist.keys())
         #for i,pist in enumerate(postOp):
         #print len(postOp),len(self.figgle[Post])
 
@@ -1564,7 +1564,7 @@ class CommAux():
                 #    self.EvalPostSymParallel(Pre,Post) #evaluate and save final rate expression
                 #print '44',datetime.now()-n4
 
-                print 'Time',datetime.now()-n
+                #print 'Time',datetime.now()-n
             else:
                 self.EvalEntry(Pre,Posts) #work out the double commutators.
 
@@ -2573,9 +2573,10 @@ class CommAux():
             go=0
             
         if(go==0):
-            print
-            print 'Entry unavailable:', start, finish
-            print 'Trying to calculate...'
+            if(verb=='y'):
+                print
+                print 'Entry unavailable:', start, finish
+                print 'Trying to calculate...'
             self.EvalRate(start, finish)
             return self.CalcRate(start, finish, verb=verb) #lets go around again... should have fixed it...
             #could get stuck in an infinite loop...

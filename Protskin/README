@@ -1,0 +1,74 @@
+# ProtSkin - protein visualization tool
+# Copyright (C) 2003-2004 Christophe Deprez
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation (version 2)
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+	NAME :
+ProtSkin - protein visualization tool
+
+	SYNOPSIS :
+ProtSkin [-b -u -s -i -1 -2 -3 -4 -5 -6 -7] filename [pdbfilename]
+
+        DESCRIPTION :
+ProtSkin is a protein visualization tool that create scripts for different programs to use with a PDB file.
+The scripts allow the coloring of the protein surface or worm, colored and shaded using numerical
+per residue values. Scripts for MOLMOL and PyMOL as generated, as well as a GRASP property file 
+(containing one value per atom in the PDB file) and a pseudo-PDB file (where the temperature factor 
+is replaced by the desired score) to use with programs such as InsightII.
+
+ProtSkin can be used in 2 ways :
+1) You can use ProtSkin to map any scalar data, such as heteronuclear NOE or chemical shift differences 
+onto your protein structure. 
+Prepare a plain text file (first column : residue numbers, second column : values to map)
+and give the file's name as first argument to ProtSkin. Give the PDB file name as second argument.
+
+2) You can use ProtSkin to read a BLAST, CLUSTAL or MSF alignment and create scripts to visualize residue conservation scores 
+onto the structure. Scores correspond to conservation percentage of the corresponding residue in the alignment.
+The BLAST alignment should be saved as "flat query anchored with letters for identities" into a file.
+Use the -b option and give the file's name as first argument to ProtSkin. Give your PDB file name as second 
+argument (if no PDB file name is provided here, conservation scores are calculated but no script is generated).
+Insertions in the query sequence are discarded. Lowercase letters are converted to uppercase.
+To allow the script to check the residue correspondance between the query sequence and the PDB file, ensure that 
+the number of the first residue of the query sequence in the BLAST file corresponds to its number in the PDB file.
+Two types of conservations scores are generated simultaneously, corresponding to conservation to the query sequence 
+or to conservation to the consensus sequence (the latter scripts start with the letter c for consensus).
+	
+        OPTIONS :
+-b   Input is a BLAST, CLUSTAL or MSF file (otherwise, it is a plain list of scores as described above)
+-u   Redundant sequences in the alignment are discarded.
+-s   Similarity to the query sequence is calculated for the score (instead of identity).
+-i   Invert colors (higher score = less color)
+-1   Color is blue
+-2   Color is green
+-3   Color is cyan
+-4   Color is red
+-5   Color is magenta
+-6   Color is yellow
+-7   Color is orange
+
+	EXAMPLES :
+1) Map scalar data (in red) : 
+ProtSkin -4 mydatafile mypdbfile
+
+2) Map BLAST (or CLUSTAL or MSF) alignment discarding redundant sequences and coloring the less conserved residues (in orange).
+ProtSkin -b -u -i -7 myblastfile mypdbfile
+
+        REFERENCES :
+http://www.ncbi.nlm.nih.gov/BLAST/
+http://npsa-pbil.ibcp.fr/cgi-bin/npsa_automat.pl?page=npsa_clustalw.html
+http://trantor.bioc.columbia.edu/grasp/
+http://www.mol.biol.ethz.ch/wuthrich/software/molmol/
+http://pymol.sourceforge.net/
+http://www.accelrys.com/insight/index.html

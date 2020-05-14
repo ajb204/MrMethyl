@@ -1,0 +1,74 @@
+# ProtSkin - protein visualization tool
+# Copyright (C) 2003-2006 Christophe Deprez
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation (version 2)
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+#################################################################################
+# 	 			PROTSKIN					#
+#    CREATE GRASP PYMOL MOLMOL INPUT FROM BLAST ALIGNMENT OF PROTEIN SEQUENCE	#
+#	Version : 1.82 - Date : August 31, 2009 - Author : Christophe Deprez 	#
+#################################################################################
+
+New since version 1.81:
+-----------------------
+Fixed bug in BLAST parsing module:
+- tolerate 'empty line' of insertions only (with no res number!)
+Thanks to Bradley D. VanderWielen for bringing this issue to our attention.
+
+New since version 1.77:
+-----------------------
+Fixed bug in BLAST parsing module:
+- last lines could be interpreted as sequence data
+
+New since version 1.75:
+-----------------------
+CGI version supports no-BLAST feature where the protein sequence is extracted from the PDB file.
+
+New since version 1.73:
+-----------------------
+Fixed bug in BLAST parsing module:
+- sequence description text starting with number could be interpreted as sequence data
+
+New since version 1.71:
+-----------------------
+Incorporated RNA support suggested by Mark Brooks.
+
+New since version 1.69:
+-----------------------
+Fixed shift in residue numbers when using plain list of scores starting after residue 1
+
+New since version 1.67:
+-----------------------
+Fixed bugs in BLAST parsing module:
+- blank line after the "Alignment" keyword,
+- allow identifiers including character '-'
+
+New since version 1.65:
+-----------------------
+Do coloring also when first sequence residues are missing (compared to PDB) 
+and first residue number can be determined from BLAST or CDD parser.
+(Before, it would result in a sequence mismatch error).
+
+New since version 1.63:
+-----------------------
+Corrected bug dealing with termination of the CDD parser: tolerate extra lines (line 188)
+
+New since version 1.61:
+-----------------------
+Corrected bug dealing with empty alignment lines (with no end number) in BLAST parser (line 238-239)
+
+New since version 1.59:
+-----------------------
+Exit after "No data file" error
+

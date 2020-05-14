@@ -5124,22 +5124,22 @@ class CommAux():
 #             for key, value in self.consts.iteritems():
 #                 print 'TAG = ', key, '\n', self.consts[key]
 #                 print '\n'
-            print 'm = ',self.consts['m']
-            print 'self.consts[C(m^2)] = \n',self.consts['C(m^2)']
-            print 'self.consts[S_tm_2(m^2)^2] = \n',self.consts['S_tm_2(m^2)^2']
-            print 'self.consts[S_tm(m^2)^2] = \n',self.consts['S_tm(m^2)^2']
-            print 'self.consts[S_inf(m^2)^2] = \n',self.consts['S_inf(m^2)^2'] 
-            print 'TOTAl = \n',self.consts['S_tm_2(m^2)^2'] + self.consts['S_tm(m^2)^2'] + self.consts['S_inf(m^2)^2'] 
+#             print 'm = ',self.consts['m']
+#             print 'self.consts[C(m^2)] = \n',self.consts['C(m^2)']
+#             print 'self.consts[S_tm_2(m^2)^2] = \n',self.consts['S_tm_2(m^2)^2']
+#             print 'self.consts[S_tm(m^2)^2] = \n',self.consts['S_tm(m^2)^2']
+#             print 'self.consts[S_inf(m^2)^2] = \n',self.consts['S_inf(m^2)^2'] 
+#             print 'TOTAl = \n',self.consts['S_tm_2(m^2)^2'] + self.consts['S_tm(m^2)^2'] + self.consts['S_inf(m^2)^2'] 
             
-            print 'e1 = ',self.consts['e1']
-            print 'self.consts[C(e1^2)] = \n',self.consts['C(e1^2)']
-            print 'self.consts[1-S(e1^2)^2] = \n',self.consts['(1-S(e1^2)^2)']
-            print 'self.consts[S(e1^2)^2] = \n',self.consts['S(e1^2)^2']
+#             print 'e1 = ',self.consts['e1']
+#             print 'self.consts[C(e1^2)] = \n',self.consts['C(e1^2)']
+#             print 'self.consts[1-S(e1^2)^2] = \n',self.consts['(1-S(e1^2)^2)']
+#             print 'self.consts[S(e1^2)^2] = \n',self.consts['S(e1^2)^2']
             
-            print 'd1 = ',self.consts['d1']
-            print 'self.consts[C(d1^2)] = \n',self.consts['C(d1^2)']
-            print 'self.consts[1-S(d1^2)^2] = \n',self.consts['(1-S(d1^2)^2)']
-            print 'self.consts[S(d1^2)^2] = \n',self.consts['S(d1^2)^2']
+#             print 'd1 = ',self.consts['d1']
+#             print 'self.consts[C(d1^2)] = \n',self.consts['C(d1^2)']
+#             print 'self.consts[1-S(d1^2)^2] = \n',self.consts['(1-S(d1^2)^2)']
+#             print 'self.consts[S(d1^2)^2] = \n',self.consts['S(d1^2)^2']
         else:
             print 'Unrecognised tag:',tag
             sys.exit(100)

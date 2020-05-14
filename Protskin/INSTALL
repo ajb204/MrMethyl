@@ -1,0 +1,30 @@
+# ProtSkin - protein visualization tool
+# Copyright (C) 2003-2004 Christophe Deprez
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation (version 2)
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+	INSTALLATION :
+	
+ProtSkin was written with Python 2.3, so you need this language installed on your computer 
+(see http://www.python.org/ for more information).
+If needed, modify the first line of the script to find with your local python interpreter.
+
+The main script is named ProtSkin and is located in the same directory as this INSTALL file.
+
+You might want to create an alias for this script in the .cshrc file in your home directory.
+For instance : 
+	alias ProtSkin /usr/people/chris/software/ProtSkin-1.34/ProtSkin
+	
+	
